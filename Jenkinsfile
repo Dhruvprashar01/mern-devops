@@ -2,17 +2,28 @@ pipeline {
   agent any
 
   stages {
-    stage('Build Docker') {
+
+    stage('Build Backend') {
       steps {
-        sh 'docker-compose build'
+        sh 'docker build -t backend ./backend'
+      }
+    }
+
+    stage('Build Frontend') {
+      steps {
+        sh 'docker build -t frontend ./frontend'
       }
     }
 
     stage('Run Containers') {
       steps {
-        sh 'docker-compose down || true'
-        sh 'docker-compose up -d'
+        sh 'docker rm -f backend-container || true'
+        sh 'docker rm -f frontend-container || true'
+
+        sh 'docker run -d -p 5000:5000 --name backend-container backend'
+        sh 'docker run -d -p 5173:5173 --name frontend-container frontend'
       }
     }
+
   }
 }
