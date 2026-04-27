@@ -1,4 +1,4 @@
-name: MERN CI Pipeline
+name: MERN CI/CD Pipeline
 
 on:
   push:
@@ -13,8 +13,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build Backend Image
-        run: docker build -t backend ./backend
+        run: docker build -t akaza04/mern-backend ./backend
+
+      - name: Push Backend Image
+        run: docker push akaza04/mern-backend
 
       - name: Build Frontend Image
-        run: docker build -t frontend ./frontend
+        run: docker build -t akaza04/mern-frontend ./frontend
+
+      - name: Push Frontend Image
+        run: docker push akaza04/mern-frontend
