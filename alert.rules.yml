@@ -1,0 +1,11 @@
+groups:
+- name: demo-alerts
+  rules:
+  - alert: HighCPUUsage
+    expr: sum(rate(container_cpu_usage_seconds_total{pod=~"frontend.*|backend.*"}[1m])) > 0
+    for: 10s
+    labels:
+      severity: warning
+    annotations:
+      summary: "CPU usage is high"
+      description: "CPU usage exceeded threshold"
